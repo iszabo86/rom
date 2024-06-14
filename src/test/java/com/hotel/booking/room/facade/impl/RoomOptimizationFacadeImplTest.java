@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class RoomOptimizationFacadeImplTest {
+class RoomOptimizationFacadeImplTest {
 
     private static final List<BigDecimal> GUEST_OFFERS = List.of(BigDecimal.valueOf(23), BigDecimal.valueOf(45),
             BigDecimal.valueOf(155), BigDecimal.valueOf(374), BigDecimal.valueOf(22), BigDecimal.valueOf(99.99),
@@ -34,7 +34,7 @@ public class RoomOptimizationFacadeImplTest {
             "2,0,2,0,583,0", //premium fully booked, no economy room available
             "0,0,0,0,0,0", //no premium room available, no economy room available
     })
-    public void testOptimizeRooms(int premiumRoomCount, int economyRoomCount,
+    void testOptimizeRooms(int premiumRoomCount, int economyRoomCount,
                                   int expectedPremiumRoomCount, int expectedEconomyRoomCount,
                                   BigDecimal expectedPremiumRevenue, BigDecimal expectedEconomyRevenue) {
 
@@ -47,12 +47,12 @@ public class RoomOptimizationFacadeImplTest {
         final RoomUsage actualPremiumRoomUsage = response.getPremiumRoomUsage();
         assertNotNull(actualPremiumRoomUsage);
         assertEquals(expectedPremiumRoomCount, actualPremiumRoomUsage.getNumberOfRooms());
-        assertTrue(expectedPremiumRevenue.compareTo(actualPremiumRoomUsage.getRevenue()) == 0);
+        assertEquals(0, expectedPremiumRevenue.compareTo(actualPremiumRoomUsage.getRevenue()));
 
         final RoomUsage actualEconomyRoomUsage = response.getEconomyRoomUsage();
         assertNotNull(actualEconomyRoomUsage);
         assertEquals(expectedEconomyRoomCount, actualEconomyRoomUsage.getNumberOfRooms());
-        assertTrue(expectedEconomyRevenue.compareTo(actualEconomyRoomUsage.getRevenue()) == 0);
+        assertEquals(0, expectedEconomyRevenue.compareTo(actualEconomyRoomUsage.getRevenue()));
 
     }
 
@@ -62,7 +62,7 @@ public class RoomOptimizationFacadeImplTest {
     }
 
     @Test
-    public void testOptimizeRoomsWithNoGuestOffers() {
+    void testOptimizeRoomsWithNoGuestOffers() {
         final RoomOptimizationRequest request = new RoomOptimizationRequest(1, 2, null);
 
         final RoomOptimizationResponse response = roomOptimizationFacade.optimizeRooms(request);
@@ -70,11 +70,11 @@ public class RoomOptimizationFacadeImplTest {
         final RoomUsage actualPremiumRoomUsage = response.getPremiumRoomUsage();
         assertNotNull(actualPremiumRoomUsage);
         assertEquals(0, actualPremiumRoomUsage.getNumberOfRooms());
-        assertTrue(BigDecimal.ZERO.compareTo(actualPremiumRoomUsage.getRevenue()) == 0);
+        assertEquals(0, BigDecimal.ZERO.compareTo(actualPremiumRoomUsage.getRevenue()));
 
         final RoomUsage actualEconomyRoomUsage = response.getEconomyRoomUsage();
         assertNotNull(actualEconomyRoomUsage);
         assertEquals(0, actualEconomyRoomUsage.getNumberOfRooms());
-        assertTrue(BigDecimal.ZERO.compareTo(actualEconomyRoomUsage.getRevenue()) == 0);
+        assertEquals(0, BigDecimal.ZERO.compareTo(actualEconomyRoomUsage.getRevenue()));
     }
 }
